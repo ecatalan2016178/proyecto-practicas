@@ -1,0 +1,37 @@
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+<body>
+   <div class="wrapper">
+      <input type="checkbox" id="btn" hidden>
+      <label for="btn" class="menu-btn">
+      <i class="fas fa-bars"></i>
+      <i class="fas fa-times"></i>
+      </label>
+      <nav id="sidebar">
+         <div class="title">
+            Menu
+         </div>
+         <ul class="list-items">
+            <li class="nav-item mb-1">
+                <a class="nav-link" routerLink="/books"><i class="bi bi-grid me-2"></i>Libros</a>
+            </li>
+            <li class="nav-item mb-1">
+                <a class="nav-link" routerLink="/reviews"><i class="bi bi-people-fill me-2"></i>Revistas</a>
+            </li>
+            <li class="nav-item mb-1">
+                <a class="nav-link" routerLink="/bookreview"><i class="bi bi-people-fill me-2"></i>Elementos Prestados</a>
+            </li>
+            <li class="nav-item mb-1">
+                <a class="nav-link" routerLink="/users"><i class="bi bi-people-fill me-2"></i>Usuarios</a>
+            </li>
+                <li>
+                    <button type="button" class="btn btn-secondary" (click)="logOut()">
+                        Cerrar sesión
+                    </button>
+                </li>
+            
+         </ul>
+      </nav>
+   </div>
+</body>

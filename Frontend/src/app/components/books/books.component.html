@@ -1,0 +1,162 @@
+<body>
+<div class="main p-4">
+    <div class="container">
+        <div class="card" style="width: 18rem; margin: auto;">
+            <img class="card-img-top" src="../../../assets/video/libros.png" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Seccion de Libros</h5>
+              <button *ngIf="user.role == 'ROLE_ADMIN'" type="button" class="btn btn-lg btn-outline-dark text-uppercase" data-bs-toggle="modal" data-bs-target="#createBook">Crear Libro</button>
+            </div>
+          </div>
+        <div class="overflow-auto maxheight container">
+            <br>
+            <table class="table table-bordered table-info">
+                <thead>
+                    <tr>
+                        <td class="text-center text-dark"><strong>Autor</strong></td>
+                        <td class="text-center text-dark"><strong>Titulo</strong></td>
+                        <td class="text-center text-dark"><strong>Edicion</strong></td>
+                        <td class="text-center text-dark"><strong>palabras clave</strong></td>
+                        <td class="text-center text-dark"><strong>Descripcion</strong></td>
+                        <td class="text-center text-dark"><strong>Temas</strong></td>
+                        <td class="text-center text-dark"><strong>Copias</strong></td>
+                        <td class="text-center text-dark"><strong>Disponible</strong></td>
+                        <td class="text-center text-dark"><strong>Click para prestarlo</strong></td>
+                        
+                    </tr>
+                </thead>
+                <tbody *ngFor="let book of books | search: search : type | orderBy: orderType: order">
+                    <tr>
+                        <td class="text-center">{{ book.author }}</td>
+                        <td class="text-center">{{ book.title }}</td>
+                        <td class="text-center">{{ book.edition }}</td>
+                        <td class="text-center">{{ book.key_words }}</td>
+                        <td class="text-center">{{ book.description }}</td>
+                        <td class="text-center">{{ book.topics }}</td>
+                        <td class="text-center">{{ book.copies }}</td>
+                        <td class="text-center">{{ book.available }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-success" (click)="loanBook(book)">adquirir</a>
+                            <a *ngIf="user.role == 'ROLE_ADMIN'" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateBook" (click)="setBookInfo(book)">Editar</a>
+                            <a *ngIf="user.role == 'ROLE_ADMIN'" class="btn btn-danger" (click)="deleteBook(book)">Remover</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+</div>
+
+<!-- Modal Crear Libro -->
+<div class="modal" id="createBook" tabindex="-1" aria-labelledby="createBookLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createBookLabel">Crear Libro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+ 
+                <form #saveBook="ngForm" (ngSubmit)="onSubmit(saveBook) ">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="inputAuthor">Autor</label>
+                            <input [(ngModel)]="book.author" name="author" type="text" class="form-control" id="inputAuthor">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputTitle">Titulo</label>
+                            <input [(ngModel)]="book.title" name="title" type="text" class="form-control" id="inputTitle">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEdition">Edicion</label>
+                            <input [(ngModel)]="book.edition" name="edition" type="number" class="form-control" id="inputEdition">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputCopies">Copias</label>
+                            <input [(ngModel)]="book.copies" name="copies" type="number" class="form-control" id="inputCopies">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputKeyWords">palabras clave</label>
+                        <input [(ngModel)]="key_words" name="key_words" type="text" class="form-control" id="inputKeyWords">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTopics">Temas</label>
+                        <input [(ngModel)]="topics" name="topics" type="text" class="form-control" id="inputTopics">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDescription">Descripcion</label>
+                        <input [(ngModel)]="book.description" name="description" type="text" class="form-control" id="inputDescription">
+                    </div>
+                    <div class="modal-footer row">
+                        <button type="submit" class="btn btn-danger btn-block" [disabled]="!saveBook.form.valid">Crear</button>
+                    </div>
+                </form>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Actualizar Libro -->
+<div class="modal" id="updateBook" tabindex="-1" aria-labelledby="updateBookLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateBookLabel">Actualizar libros</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="deleteBookInfo()"></button>
+            </div>
+            <div class="modal-body">
+                <form #updateBookForm="ngForm">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="inputUpdateAuthor">Autor</label>
+                            <input [(ngModel)]="book.author" name="author" type="text" class="form-control" id="inputUpdateAuthor">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputUpdateTitle">Titulo</label>
+                            <input [(ngModel)]="book.title" name="title" type="text" class="form-control" id="inputUpdateTitle">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="inputUpdateEdition">Edicion</label>
+                            <input [(ngModel)]="book.edition" name="edition" type="number" class="form-control" id="inputUpdateEdition">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputUpdateCopies">Copias</label>
+                            <input [(ngModel)]="book.copies" name="copies" type="number" class="form-control" id="inputUpdateCopies">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputUpdateKeyWords">palabras clave</label>
+                        <input [(ngModel)]="key_words" name="key_words" type="text" class="form-control" id="inputUpdateKeyWords">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputUpdateTopics">Temas</label>
+                        <input [(ngModel)]="topics" name="topics" type="text" class="form-control" id="inputUpdateTopics">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputUpdateDescription">Descripcion</label>
+                        <input [(ngModel)]="book.description" name="description" type="text" class="form-control" id="inputUpdateDescription">
+                    </div>
+                    <div class="modal-footer row">
+                        <button type="submit" class="btn btn-success btn-block" [disabled]="!updateBookForm.form.valid" (click)="updateBook(updateBookForm)">Actualizar</button>
+                    </div>
+                </form>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="deleteBookInfo()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
